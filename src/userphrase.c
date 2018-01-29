@@ -127,6 +127,9 @@ char *GetDefaultUserPhrasePath(ChewingData *pgdata)
 #    include <string.h>
 #    include <unistd.h>
 
+/*
+ * Get the default user phrase dir, if not exists, then create it
+ */
 char *GetDefaultChewingUserPath(ChewingData *pgdata)
 {
     char *tmp;
@@ -161,6 +164,9 @@ char *GetDefaultChewingUserPath(ChewingData *pgdata)
     return path;
 }
 
+/*
+ * Get the default user phrase database file path
+ */
 char *GetDefaultUserPhrasePath(ChewingData *pgdata)
 {
     char *tmp;
