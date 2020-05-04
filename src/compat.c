@@ -45,6 +45,14 @@ CHEWING_API void chewing_Terminate()
 {
 }
 
+/* This function sets the 'selectAreaLen', 'maxChiSymbolLen' and
+ * 'selKey' parameter from PCD.
+ *
+ * The PCD argument is a pointer to a Chewing configuration data
+ * structure.  See also the 'ChewingConfigData' data type.
+ *
+ * The return value is '0' on success and '-1' on failure.
+ */
 CHEWING_API int chewing_Configure(ChewingContext *ctx, ChewingConfigData * pcd)
 {
     chewing_set_candPerPage(ctx, pcd->candPerPage);

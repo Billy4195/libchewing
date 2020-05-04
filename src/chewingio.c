@@ -159,9 +159,24 @@ static ChewingData *allocate_ChewingData(void (*logger) (void *data, int level, 
     return data;
 }
 
+/* The 'chewing_new2' function creates a new instance of the Chewing
+ * IM. The SYSPATH is the directory path to system dictionary.  The
+ * USERPATH is file path to user dictionary.  User shall have enough
+ * permission to update this file.  The LOGGER and LOGGERDATA is
+ * logger function and its data.
+ *
+ * All parameters will be default if set to 'NULL'.
+ *
+ * The return value is a pointer to the new Chewing IM instance.  See
+ * also the 'chewing_new', 'chewing_delete' function.
+ */
 CHEWING_API ChewingContext *chewing_new2(const char *syspath,
                                          const char *userpath,
-                                         void (*logger) (void *data, int level, const char *fmt, ...), void *loggerdata)
+                                         void (*logger) (void *data,
+                                                         int level,
+                                                         const char *fmt,
+                                                         ...),
+                                         void *loggerdata)
 {
     ChewingContext *ctx;
     ChewingData *pgdata;
@@ -284,11 +299,21 @@ CHEWING_API ChewingContext *chewing_new2(const char *syspath,
     return NULL;
 }
 
+/* The 'chewing_new' function creates a new instance of the Chewing
+ * IM.
+ *
+ * The return value is a pointer to the new Chewing IM instance.  See
+ * also the 'chewing_new2', 'chewing_delete' functions.
+ */
 CHEWING_API ChewingContext *chewing_new()
 {
     return chewing_new2(NULL, NULL, NULL, NULL);
 }
 
+/* This function resets all settings in the given Chewing IM instance.
+ *
+ * The return value is '0' on success and '-1' on failure.
+ */
 CHEWING_API int chewing_Reset(ChewingContext *ctx)
 {
     ChewingData *pgdata;
@@ -384,6 +409,9 @@ CHEWING_API char *chewing_get_KBString(const ChewingContext *ctx)
     return strdup(kb_type_str[ctx->data->bopomofoData.kbtype]);
 }
 
+/* This function releases the resources used by the given Chewing IM
+ * instance.
+ */
 CHEWING_API void chewing_delete(ChewingContext *ctx)
 {
     if (ctx) {
@@ -404,6 +432,17 @@ CHEWING_API void chewing_delete(ChewingContext *ctx)
     return;
 }
 
+/* The 'chewing_free' function releases the memory allocated by the
+ * Chewing IM and returned to the caller.
+ *
+ * There are functions returning pointers of strings or other data
+ * structures that are allocated on the heap.  These memory _must_ be
+ * freed to avoid memory leak.  To avoid memory allocator mismatch
+ * between the Chewing IM and the caller, use this function to free
+ * the resource.
+ *
+ * Do nothing if p is 'NULL'.
+ */
 CHEWING_API void chewing_free(void *p)
 {
     free(p);
@@ -1864,8 +1903,40 @@ CHEWING_API int chewing_get_phoneSeqLen(const ChewingContext *ctx)
     return ctx->data->nPhoneSeq;
 }
 
+/* This function sets the logger function LOGGER.  The logger function
+ * is used to provide log inside Chewing IM for debugging.  The DATA
+ * in 'chewing_set_logger' is passed directly to DATA in LOGGER when
+ * logging. The following example shows how to use DATA:
+ *
+ *      void logger( void *data, int level, const char *fmt, ... )
+ *      {
+ *          FILE *fd = (FILE *) data;
+ *          ...
+ *      }
+ *
+ *      int main()
+ *      {
+ *          ChewingContext *ctx;
+ *          FILE *fd;
+ *          ...
+ *          chewing_set_logger(ctx, logger, fd);
+ *          ...
+ *      }
+ *
+ * The LEVEL is log level.  The symbolic names and their values are
+ * listed as following:
+ * int CHEWING_LOG_VERBOSE  1
+ *     CHEWING_LOG_DEBUG    2
+ *     CHEWING_LOG_INFO     3
+ *     CHEWING_LOG_WARN     4
+ *     CHEWING_LOG_ERROR    5
+ */
 CHEWING_API void chewing_set_logger(ChewingContext *ctx,
-                                    void (*logger) (void *data, int level, const char *fmt, ...), void *data)
+                                    void (*logger) (void *data,
+                                                    int level,
+                                                    const char *fmt,
+                                                    ...),
+                                    void *data)
 {
     ChewingData *pgdata;
 
